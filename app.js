@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 const cookieParser = require('cookie-parser');
-// const cors = require('cors');
+const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const { login, createUser, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth'); // Защитита роутов авторизацией: если клиент не прислал JWT, доступ к роутам ему должен быть закрыт
