@@ -10,11 +10,12 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger'); // логирование
-const { settingMongoose, mongoDbName } = require('./utils/const');
+const { settingMongoose } = require('./utils/const');
 const { limiter } = require('./middlewares/rate-limit');
 const router = require('./routes/index');
 const errorHandler = require('./middlewares/error-handler');
 const { CRASHED_ERROR } = require('./utils/const');
+const { mongoDbName } = require('./utils/const');
 
 mongoose.connect(mongoDbName, settingMongoose);
 
@@ -29,8 +30,6 @@ app.use(cors({
   origin: [
     'https://ravil-movies-api.nomoredomains.monster',
     'https://ravil-movies-frontend.nomoredomains.monster',
-    'https://localhost:3000',
-    'https://localhost:3001',
   ],
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],

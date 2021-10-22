@@ -1,6 +1,6 @@
-const { NODE_ENV, DB_CONN } = process.env;
+const { NODE_ENV, BD_NAME_ON_SERVER } = process.env;
 
-module.exports.mongoDbName = NODE_ENV === 'production' ? DB_CONN : 'mongodb://localhost:27017/bitfilmsdb';
+module.exports.mongoDbName = NODE_ENV === 'production' ? BD_NAME_ON_SERVER : 'bitfilmsdb';
 module.exports.settingMongoose = {
   useNewUrlParser: true,
   useCreateIndex: true,
