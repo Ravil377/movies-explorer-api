@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const Movie = require('../models/movie');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequest = require('../errors/bad-request-err');
@@ -50,10 +49,9 @@ module.exports.createMovie = (req, res, next) => {
     .then((film) => res.send(film))
     .catch((err) => {
       if (err.name === VALIDATION_ERROR) {
-        next(new BadRequest(INCORRECT_DATA_CREATING_MOVIE_MESSAGE));
-      } else {
-        next(err);
+        return next(new BadRequest(INCORRECT_DATA_CREATING_MOVIE_MESSAGE));
       }
+      return next(err);
     });
 };
 
@@ -65,14 +63,14 @@ module.exports.deleteMovie = (req, res, next) => Movie.findById(req.params.movie
         .then((deleteMovie) => res.send(deleteMovie))
         .catch(next);
     }
-    next(new Forbidden(FORBIDDEN_MESSAGE));
+    return next(new Forbidden(FORBIDDEN_MESSAGE));
   })
   .catch((err) => {
     if (err.name === ERROR) {
-      next(new NotFoundError(NOT_FOUND_MOVIE_MESSAGE));
+      return next(new NotFoundError(NOT_FOUND_MOVIE_MESSAGE));
     }
     if (err.name === CAST_ERROR) {
-      next(new BadRequest(NOT_FOUND_MOVIE_MESSAGE));
+      return next(new BadRequest(NOT_FOUND_MOVIE_MESSAGE));
     }
-    next(err);
+    return next(err);
   });

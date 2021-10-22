@@ -1,4 +1,6 @@
-module.exports.mongoDbLink = 'mongodb://localhost:27017/bitfilmsdb';
+const { NODE_ENV, DB_CONN } = process.env;
+
+module.exports.mongoDbName = NODE_ENV === 'production' ? DB_CONN : 'mongodb://localhost:27017/bitfilmsdb';
 module.exports.settingMongoose = {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -26,7 +28,8 @@ module.exports.UNAUTHORISED_ERROR_MESSAGE = 'Передан неверный л�
 module.exports.UNAUTHORISED_MESSAGE = 'Необходима авторизация';
 module.exports.INVALID_DATA_CREATING_USER_MESSAGE = 'Переданы некорректные данные при записи пользователя.';
 module.exports.INCORRECT_DATA_UPDATING_PROFILE_MESSAGE = 'Переданы некорректные данные при обновлении профиля пользователя.';
-// module.exports.INCORRECT_DATA_UPDATING_AVATAR_MESSAGE = 'Переданы некорректные данные при обновлении аватара.';
 module.exports.INCORRECT_DATA_CREATING_MOVIE_MESSAGE = 'Переданы некорректные данные при записи фильма.';
 module.exports.NOT_FOUND_MOVIE_MESSAGE = 'Фильм с указанным _id не найден.';
-// module.exports.INCORRECT_DATA_LIKE_UNLIKE_MESSAGE = 'Переданы некорректные данные для постановки/снятии лайка.';
+module.exports.CONFLICT_ERROR = 'Email уже используется другим пользователем';
+module.exports.CRASHED_ERROR = 'Сервер сейчас упадёт';
+module.exports.PAGENOTFOUND_ERROR = 'Страница не найдена';

@@ -7,7 +7,6 @@ const {
   UNAUTHORISED_MESSAGE,
 } = require('../utils/const');
 
-// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   if (!req.cookies.jwt) {
     throw new AuthError(UNAUTHORISED_MESSAGE);
@@ -19,10 +18,10 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
 
-  next(); // пропускаем запрос дальше
+  return next(); // пропускаем запрос дальше
 };

@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-undef */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -18,9 +16,9 @@ const {
   DEFAULT_ERROR_MESSAGE,
   INVALID_DATA_CREATING_USER_MESSAGE,
   INCORRECT_DATA_UPDATING_PROFILE_MESSAGE,
-  NOT_FOUND_LOGIN_MESSAGE,
   SALT_ROUNDS,
   UNAUTHORISED_ERROR_MESSAGE,
+  CONFLICT_ERROR,
 } = require('../utils/const');
 
 module.exports.getUsersMe = (req, res, next) => User.findById(req.user._id)
@@ -28,10 +26,9 @@ module.exports.getUsersMe = (req, res, next) => User.findById(req.user._id)
   .then((user) => res.send(user))
   .catch((err) => {
     if (err.name === CAST_ERROR) {
-      next(new NotFoundError(NOT_FOUND_USER_MESSAGE));
-    } else {
-      next(err);
+      return next(new NotFoundError(NOT_FOUND_USER_MESSAGE));
     }
+    return next(err);
   });
 
 module.exports.createUser = (req, res, next) => {
@@ -42,7 +39,7 @@ module.exports.createUser = (req, res, next) => {
   } = req.body;
   bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
     if (error) {
-      next(new InternalServerError(DEFAULT_ERROR_MESSAGE));
+      return next(new InternalServerError(DEFAULT_ERROR_MESSAGE));
     }
     return User.create({
       name,
@@ -52,13 +49,12 @@ module.exports.createUser = (req, res, next) => {
       .then((user) => res.send(user))
       .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
-          next(new UserIsRegistered('Такой пользователь уже зарегистрирован'));
+          return next(new UserIsRegistered('Такой пользователь уже зарегистрирован'));
         }
         if (err.name === VALIDATION_ERROR) {
-          next(new BadRequest(INVALID_DATA_CREATING_USER_MESSAGE));
-        } else {
-          next(err);
+          return next(new BadRequest(INVALID_DATA_CREATING_USER_MESSAGE));
         }
+        return next(err);
       });
   });
 };
@@ -68,9 +64,6 @@ module.exports.login = (req, res, next) => {
     email,
     password,
   } = req.body;
-  if (!email || !password) {
-    return next(new BadRequest(NOT_FOUND_LOGIN_MESSAGE));
-  }
 
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -109,11 +102,14 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === VALIDATION_ERROR) {
-        next(new BadRequest(INCORRECT_DATA_UPDATING_PROFILE_MESSAGE));
+        return next(new BadRequest(INCORRECT_DATA_UPDATING_PROFILE_MESSAGE));
       }
       if (err.name === CAST_ERROR) {
-        next(new NotFoundError(NOT_FOUND_USER_MESSAGE));
+        return next(new NotFoundError(NOT_FOUND_USER_MESSAGE));
       }
-      next(err);
+      if (err.code === 11000) {
+        return next(new UserIsRegistered(CONFLICT_ERROR));
+      }
+      return next(err);
     });
 };
