@@ -28,11 +28,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
   origin: [
-    'https://ravil-movies-api.nomoredomains.monster',
-    'https://ravil-movies-frontend.nomoredomains.monster',
-    'https://localhost:3002',
-    'https://localhost:3001',
-    'https://localhost:3000',
+    'http://shamilove.xyz',
+    'http://localhost:3002',
+    'http://localhost:3001',
+    'http://localhost:3000',
   ],
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
