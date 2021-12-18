@@ -1,1 +1,1 @@
-API ravil-movies-api.nomoredomains.monster
+API api.shamolove.xyz
